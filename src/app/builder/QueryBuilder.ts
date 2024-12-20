@@ -10,14 +10,14 @@ class QueryBuilder<T> {
     }
 
     search(searchableFields: string[]) {
-        //example: http://.../students?searchTerm=khandoker
-        if (this?.query?.searchTerm) {
+        //example: http://.../students?search=khandoker
+        if (this?.query?.search) {
             this.modelQuery = this.modelQuery.find({
                 $or: searchableFields.map(
                     (field) =>
                         ({
                             [field]: {
-                                $regex: this?.query?.searchTerm,
+                                $regex: this?.query?.search,
                                 $options: "i",
                             },
                         }) as FilterQuery<T>,
@@ -29,9 +29,16 @@ class QueryBuilder<T> {
     }
 
     filter() {
-        //example: http://.../students?email=john.doe1@example.com
+        // example: http://.../students?email=john.doe1@example.com
         const queryObj = { ...this.query };
-        const excludeFields = ["searchTerm", "sort", "limit", "page", "fields"];
+        const excludeFields = [
+            "search",
+            "sortBy",
+            "sortOrder",
+            "limit",
+            "page",
+            "fields",
+        ];
         excludeFields.forEach((el) => delete queryObj[el]); //remains email
         this.modelQuery = this.modelQuery.find(queryObj as FilterQuery<T>);
 
@@ -39,11 +46,24 @@ class QueryBuilder<T> {
     }
 
     sort() {
-        //example: http://.../students?sort=-email
-        const sort =
-            (this?.query?.sort as string)?.split(",")?.join(" ") ||
-            "-createdAt";
-        this.modelQuery = this.modelQuery.sort(sort as string);
+        //example: http://.../students?sortBy=createdAt,title&sortOrder=desc
+        const sortBy = (this?.query?.sortBy as string)?.split(",") || [
+            "createdAt",
+        ];
+        const sortOrder = (this?.query?.sortOrder as string)?.split(",") || [
+            "asc",
+        ];
+
+        const sortObject = sortBy.reduce(
+            (acc: Record<string, 1 | -1>, field, index) => {
+                acc[field] =
+                    sortOrder[index]?.toLowerCase() === "desc" ? -1 : 1;
+                return acc;
+            },
+            {},
+        );
+
+        this.modelQuery = this.modelQuery.sort(sortObject);
 
         return this;
     }

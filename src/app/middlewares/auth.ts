@@ -9,13 +9,15 @@ import { User } from "../modules/user/user.model";
 const auth = (...requiredRoles: TUserRole[]) => {
     return async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const token = req.headers.authorization;
-            if (!token) {
+            const tokenWithBearer = req.headers.authorization;
+            if (!tokenWithBearer) {
                 throw new AppError(
                     httpStatus.UNAUTHORIZED,
                     "You are not authorized",
                 );
             }
+
+            const token = tokenWithBearer.split(" ")[1];
 
             const decoded = jwt.verify(
                 token,
@@ -36,7 +38,7 @@ const auth = (...requiredRoles: TUserRole[]) => {
                 );
             }
 
-            req.user = decoded as JwtPayload;
+            req.user = user as JwtPayload;
             return next();
         } catch (err) {
             next(err);
