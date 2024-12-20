@@ -1,5 +1,6 @@
 export const USER_ROLE = {
-    Student: "Student",
-    Faculty: "Faculty",
-    Admin: "Admin",
+    admin: "admin",
+    user: "user",
 } as const;
+
+export const userRoleArray = ["admin", "user"];

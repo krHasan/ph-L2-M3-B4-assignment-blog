@@ -1,45 +1,18 @@
 import { UserServices } from "./user.service";
 import sendResponse from "../../utils/sendResponse";
 import catchAsync from "../../utils/catchAsync";
+import { httpStatus } from "../../config/httpStatus";
 
-const createStudent = catchAsync(async (req, res) => {
-    const { password, student } = req.body;
-
-    const result = await UserServices.createStudentIntoDB(password, student);
+const createUser = catchAsync(async (req, res) => {
+    const result = await UserServices.createUserIntoDB(req.body);
     sendResponse(res, {
         success: true,
-        statusCode: 200,
-        message: "Student is created successfully",
-        data: result,
-    });
-});
-
-const createFaculty = catchAsync(async (req, res) => {
-    const { password, faculty } = req.body;
-
-    const result = await UserServices.createFacultyIntoDB(password, faculty);
-    sendResponse(res, {
-        success: true,
-        statusCode: 200,
-        message: "Faculty is created successfully",
-        data: result,
-    });
-});
-
-const createAdmin = catchAsync(async (req, res) => {
-    const { password, admin } = req.body;
-
-    const result = await UserServices.createAdminIntoDB(password, admin);
-    sendResponse(res, {
-        success: true,
-        statusCode: 200,
-        message: "Admin is created successfully",
+        message: "User registered successfully",
+        statusCode: httpStatus.CREATED,
         data: result,
     });
 });
 
 export const UserControllers = {
-    createStudent,
-    createFaculty,
-    createAdmin,
+    createUser,
 };

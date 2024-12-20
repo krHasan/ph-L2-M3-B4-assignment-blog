@@ -9,7 +9,6 @@ import { User } from "../modules/user/user.model";
 const auth = (...requiredRoles: TUserRole[]) => {
     return async (req: Request, res: Response, next: NextFunction) => {
         try {
-            console.log("auth originalUrl", req.originalUrl);
             const token = req.headers.authorization;
             if (!token) {
                 throw new AppError(
@@ -23,24 +22,11 @@ const auth = (...requiredRoles: TUserRole[]) => {
                 config.jwt_access_secret as string,
             ) as JwtPayload;
 
-            const { role, userId, iat } = decoded;
+            const { role, email } = decoded;
 
-            const user = await User.isUserExistsByCustomId(userId);
-            if (!user || user?.isDeleted || user?.status === "blocked") {
+            const user = await User.isUserExistsByEmail(email);
+            if (!user || user?.isBlocked) {
                 throw new AppError(httpStatus.NOT_FOUND, "User not found");
-            }
-
-            if (
-                user?.passwordChangedAt &&
-                User.isJWTIssuedBeforePasswordChanged(
-                    user?.passwordChangedAt,
-                    iat as number,
-                )
-            ) {
-                throw new AppError(
-                    httpStatus.UNAUTHORIZED,
-                    "You are not authorized",
-                );
             }
 
             if (requiredRoles && !requiredRoles.includes(role)) {

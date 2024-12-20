@@ -15,7 +15,7 @@ const handleCastError = (
 
     return {
         statusCode,
-        message: "Invalid ID",
+        message: "Cast Error",
         errorSources,
     };
 };

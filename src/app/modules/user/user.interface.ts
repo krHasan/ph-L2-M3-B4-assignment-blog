@@ -3,17 +3,15 @@ import { Model } from "mongoose";
 import { USER_ROLE } from "./user.constant";
 
 export interface TUser {
-    id: string;
+    name: string;
+    email: string;
     password: string;
-    needsPasswordChange: boolean;
-    passwordChangedAt?: Date;
-    role: "Admin" | "Student" | "Faculty";
-    status: "in-progress" | "blocked" | "active";
-    isDeleted: boolean;
+    role: "admin" | "user";
+    isBlocked: boolean;
 }
 
 export interface UserModel extends Model<TUser> {
-    isUserExistsByCustomId(id: string): Promise<TUser>;
+    isUserExistsByEmail(email: string): Promise<TUser>;
     isPasswordMatched(
         plainTextPassword: string,
         hashedPassword: string,

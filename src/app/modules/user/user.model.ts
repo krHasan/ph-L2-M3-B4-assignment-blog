@@ -5,7 +5,11 @@ import config from "../../config";
 
 const userSchema = new Schema<TUser, UserModel>(
     {
-        id: {
+        name: {
+            type: String,
+            required: true,
+        },
+        email: {
             type: String,
             required: true,
             unique: true,
@@ -15,29 +19,27 @@ const userSchema = new Schema<TUser, UserModel>(
             required: true,
             select: 0,
         },
-        needsPasswordChange: {
-            type: Boolean,
-            default: true,
-        },
-        passwordChangedAt: {
-            type: Date,
-        },
         role: {
             type: String,
-            enum: ["Admin", "Student", "Faculty"],
+            enum: ["admin", "user"],
+            default: "user",
         },
-        status: {
-            type: String,
-            enum: ["in-progress", "blocked", "active"],
-            default: "in-progress",
-        },
-        isDeleted: {
+        isBlocked: {
             type: Boolean,
             default: false,
         },
     },
     {
         timestamps: true,
+        toJSON: {
+            transform: (doc, ret) => {
+                return {
+                    _id: ret._id,
+                    name: ret.name,
+                    email: ret.email,
+                };
+            },
+        },
     },
 );
 
@@ -58,10 +60,8 @@ userSchema.post("save", function (doc, next) {
     next();
 });
 
-userSchema.statics.isUserExistsByCustomId = async function (id: string) {
-    return await User.findOne({
-        id,
-    }).select("+password");
+userSchema.statics.isUserExistsByEmail = async function (email: string) {
+    return await User.findOne({ email }).select("+password");
 };
 
 userSchema.statics.isPasswordMatched = async function (
