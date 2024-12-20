@@ -17,7 +17,7 @@ const loginUser = async (payload: TLoginUser) => {
     );
 
     if (!isPasswordMatched) {
-        throw new AppError(httpStatus.FORBIDDEN, "Password didn't not matched");
+        throw new AppError(httpStatus.UNAUTHORIZED, "Invalid credentials");
     }
 
     const jwtPayload = {

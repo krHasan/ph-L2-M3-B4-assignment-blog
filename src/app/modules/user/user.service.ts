@@ -1,10 +1,8 @@
-import config from "../../config";
 import { TUser } from "./user.interface";
 import { User } from "./user.model";
 import AppError from "../../errors/AppError";
 
 const createUserIntoDB = async (payload: Partial<TUser>) => {
-    payload.password = payload?.password || (config.default_password as string);
     try {
         const result = await User.create(payload);
         return result;
