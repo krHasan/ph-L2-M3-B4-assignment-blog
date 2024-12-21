@@ -4,6 +4,11 @@
 
 The goal of this project is to develop a backend for a blogging platform that allows users to write, update, and delete their blogs. The system supports two roles: **Admin** and **User**. The Admin has special permissions to manage users and their blogs, while users can perform CRUD operations on their own blogs. This backend includes secure authentication, role-based access control, and a public API for viewing blogs with search, sort, and filter functionalities.
 
+## Live Demo
+
+Want to test your own, please use this link
+https://ph-l2-m3-b4-assignment.vercel.app/
+
 ## Technologies Used
 
 -   **TypeScript**
@@ -173,7 +178,7 @@ A public API is provided for reading blogs:
     npm run start:dev
     ```
 
-### Feature Enhancement
+## Feature Enhancement
 
 -   Add support for **draft blogs**, allowing users to save blogs as drafts before publishing. Drafts can be edited and published later.
 
